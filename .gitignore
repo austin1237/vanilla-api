@@ -1,0 +1,16 @@
+### Go ###
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+bin/
+
+# Golang project vendor packages which should be ignored
+vendor/
+
+# tmp dir created by hotreloader github.com/pilu/fresh
+tmp/
+
+# Test binary, build with `go test -c`
+*.test
