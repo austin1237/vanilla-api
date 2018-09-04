@@ -1,18 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
+	"os"
 
-	"github.com/user/api/router"
+	"github.com/user/api/server"
 )
 
 func main() {
-	fmt.Println("we out here boy1")
-	mux := http.NewServeMux()
-	router.SetUpRoutes(mux)
-	log.Printf("serving on port 8080")
-	err := http.ListenAndServe(":8080", mux)
-	log.Fatal(err)
+	done := make(chan bool, 1)
+	server.Start(done)
+	<-done
+	log.Println("api shutdown exiting")
+	os.Exit(0)
 }
