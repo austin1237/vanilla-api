@@ -10,13 +10,6 @@ import (
 	"github.com/user/api/router"
 )
 
-type key int
-
-const (
-	requestIDKey key = 0
-	serverKey    key = 2
-)
-
 type api struct {
 	Server *http.Server
 	Done   chan bool
@@ -29,7 +22,7 @@ func Start(done chan bool) {
 	mux.Handle("/shutdown", shutDownHandler())
 	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
 	logger.Println("Server is ready to handle requests at :8080")
-	router.SetUpRoutes(mux)
+	router.AddRoutes(mux)
 	serv.Done = done
 	serv.Server = &http.Server{
 		Addr:     ":8080",
