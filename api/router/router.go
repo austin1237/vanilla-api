@@ -3,12 +3,16 @@ package router
 import (
 	"net/http"
 
-	"github.com/user/api/hasher"
+	"github.com/user/api/handler"
 	"github.com/user/api/middleware"
+	"github.com/user/api/server"
 	"github.com/user/api/stats"
 )
 
-func AddRoutes(mux *http.ServeMux) {
-	mux.Handle("/hash", stats.StartTime(middleware.PostOnly(middleware.ArtificalWait(hasher.GenerateHash(stats.CalcDuration())))))
-	mux.Handle("/stats", middleware.GetOnly(stats.GetStats()))
+func CreateRouter(sStats *stats.ServerStats, serv server.Api) *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.Handle("/hash", middleware.StartTime(middleware.PostOnly(middleware.ArtificalWait(handler.Hash(sStats)))))
+	mux.Handle("/stats", middleware.GetOnly(handler.Stats(sStats)))
+	mux.Handle("/shutdown", handler.ShutDown(serv))
+	return mux
 }

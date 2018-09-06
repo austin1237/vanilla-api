@@ -5,46 +5,38 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-
-	"github.com/user/api/router"
 )
 
-type api struct {
+type Api struct {
 	Server *http.Server
 	Done   chan bool
+	Mux    *http.ServeMux
 }
 
-var serv api
-
-func Start(done chan bool) {
-	mux := http.NewServeMux()
-	mux.Handle("/shutdown", shutDownHandler())
-	logger := log.New(os.Stdout, "http: ", log.LstdFlags)
-	logger.Println("Server is ready to handle requests at :8080")
-	router.AddRoutes(mux)
-	serv.Done = done
-	serv.Server = &http.Server{
-		Addr:     ":8080",
-		ErrorLog: logger,
-		Handler:  mux,
+func New(done chan bool, port string) Api {
+	httpServer := &http.Server{
+		Addr: ":" + port,
 	}
+	serv := Api{
+		Done:   done,
+		Server: httpServer,
+	}
+	return serv
+}
+
+func (serv Api) RegisterRoutes(mux *http.ServeMux) {
+	serv.Server.Handler = mux
+}
+
+// Start starts the api server
+func (serv Api) Start() {
+	log.Println("listening on :8080")
 	if err := serv.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		logger.Fatalf("Error listening on :8080 %v\n", err)
+		log.Fatalf("Error listening on :8080 %v\n", err)
 	}
 }
 
-func shutDownHandler() http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("ShuttingDown"))
-		go func() {
-			ShutDown()
-		}()
-	})
-}
-
-func ShutDown() {
+func (serv Api) ShutDown() {
 	fmt.Println("shutting the server down")
 	serv.Server.SetKeepAlivesEnabled(false)
 	if err := serv.Server.Shutdown(context.Background()); err != nil {
