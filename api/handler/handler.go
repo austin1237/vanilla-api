@@ -9,6 +9,7 @@ import (
 	"github.com/user/api/hasher"
 	"github.com/user/api/server"
 	"github.com/user/api/stats"
+	"github.com/user/api/validator"
 )
 
 type key int
@@ -34,7 +35,11 @@ func Stats(sStats *stats.ServerStats) http.Handler {
 func Hash(sStats *stats.ServerStats) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
-		// Validate form here
+		err := validator.ValidateFormPassword(r.Form)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		userPassword := r.Form["password"][0]
 		hashStr := hasher.GenerateHash(userPassword)
 		w.WriteHeader(http.StatusOK)

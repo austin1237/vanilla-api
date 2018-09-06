@@ -1,7 +1,6 @@
 package stats
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -27,5 +26,4 @@ func (sStats *ServerStats) SuccessfulRequest(startTime time.Time) {
 	average := sum / float64(len(sStats.ExecTimes))
 	sStats.Average = average
 	sStats.Total++
-	fmt.Println("done adding up")
 }
