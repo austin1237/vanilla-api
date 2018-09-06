@@ -28,7 +28,7 @@ func (serv Api) RegisterRoutes(mux *http.ServeMux) {
 	serv.Server.Handler = mux
 }
 
-// Start starts the api server
+// Start the api server beings listening for requests
 func (serv Api) Start() {
 	log.Println("listening on :8080")
 	if err := serv.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
