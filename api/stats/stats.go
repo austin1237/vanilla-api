@@ -15,9 +15,9 @@ func New() *ServerStats {
 	return &sStats
 }
 
-func (sStats *ServerStats) SuccessfulRequest(startTime time.Time) {
+func (sStats *ServerStats) SuccessfulRequest(startTime time.Time, endTime time.Time) {
 	var sum float64
-	diff := time.Now().Sub(startTime)
+	diff := endTime.Sub(startTime)
 	diffMicro := diff.Seconds() * 1000000
 	sStats.ExecTimes = append(sStats.ExecTimes, diffMicro)
 	for _, num := range sStats.ExecTimes {

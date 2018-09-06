@@ -12,12 +12,6 @@ import (
 	"github.com/user/api/validator"
 )
 
-type key int
-
-var (
-	startTimeKey key = 1
-)
-
 func Stats(sStats *stats.ServerStats) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		clientJSON, err := json.Marshal(sStats)
@@ -48,7 +42,8 @@ func Hash(sStats *stats.ServerStats) http.Handler {
 		if !ok {
 			log.Println("Error: start time was not found in context, skipping metrics")
 		} else {
-			sStats.SuccessfulRequest(startTime)
+			now := time.Now()
+			sStats.SuccessfulRequest(startTime, now)
 		}
 	})
 }
