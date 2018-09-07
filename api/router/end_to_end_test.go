@@ -25,9 +25,12 @@ func newreq(t *testing.T, method, url string, body io.Reader) *http.Request {
 }
 
 func TestEndToEnd(t *testing.T) {
-	done := make(chan bool, 1)
+	if testing.Short() {
+		t.Skip("skipping integration tests in short mode.")
+	}
+
 	sStats := stats.New()
-	serv := server.New(done, "8080")
+	serv := server.New("8080")
 	routes := CreateRouter(sStats, serv)
 	serv.RegisterRoutes(routes)
 	testServer := httptest.NewUnstartedServer(routes)

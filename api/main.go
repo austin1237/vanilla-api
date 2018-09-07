@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/user/api/router"
@@ -24,13 +23,10 @@ func init() {
 }
 
 func main() {
-	done := make(chan bool, 1)
 	sStats := stats.New()
-	server := server.New(done, apiPort)
+	server := server.New(apiPort)
 	router := router.CreateRouter(sStats, server)
 	server.RegisterRoutes(router)
 	server.Start()
-	<-done
-	log.Println("api shutdown exiting")
 	os.Exit(0)
 }
