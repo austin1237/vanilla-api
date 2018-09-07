@@ -3,7 +3,7 @@ services:
 
   api:
     build: ./api
-    # command: 'go test -v ./...'
+    # command: 'go test ./...'
     volumes:
       - ./api:/go/src/github.com/user/api
     ports:  

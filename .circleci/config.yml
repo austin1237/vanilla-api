@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: golang:1.11.0
+    working_directory: ~/app
+    steps:
+      - checkout
+      - run: 
+          name: place api src in $GOPATH
+          command: mkdir -p /go/src/github.com/user/api && cp -a ~/app/api/. /go/src/github.com/user/api/
+      - run:
+          name: Run tests
+          command: cd /go/src/github.com/user/api && go test ./...
+
+
+workflows:
+  version: 2
+  test-api-service:
+    jobs:
+       - test
