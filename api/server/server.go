@@ -30,9 +30,9 @@ func (serv Api) RegisterRoutes(mux *http.ServeMux) {
 
 // Start the api server beings listening for requests
 func (serv Api) Start() {
-	log.Println("listening on :8080")
+	log.Println("listening on " + serv.Server.Addr)
 	if err := serv.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("Error listening on :8080 %v\n", err)
+		log.Fatalf("Error listening on %v %v\n", serv.Server.Addr, err)
 	}
 }
 

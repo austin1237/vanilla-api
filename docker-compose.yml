@@ -3,8 +3,9 @@ services:
 
   api:
     build: ./api
-    # command: 'go test ./...'
     volumes:
       - ./api:/go/src/github.com/user/api
     ports:  
       - "8080:8080"
+    environment:
+      API_PORT: 8080
