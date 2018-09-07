@@ -42,11 +42,11 @@ func (serv Api) Start() {
 
 // ShutDown will attempt to gracefully shutdown the server
 func (serv Api) ShutDown() {
-	log.Println("shutting the server down")
+	log.Println("in the process of shutting the server down...")
 	serv.Server.SetKeepAlivesEnabled(false)
 	if err := serv.Server.Shutdown(context.Background()); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("server down has shutdown")
+	log.Println("server has shutdown")
 	serv.Done <- true
 }
