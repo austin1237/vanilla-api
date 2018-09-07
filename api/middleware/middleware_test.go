@@ -26,6 +26,24 @@ func TestStartTime(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 }
 
+func TestReqID(t *testing.T) {
+	req, err := http.NewRequest("POST", "/hash", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if val, ok := r.Context().Value("requestIDKey").(string); !ok {
+			t.Errorf("requestIDKey not in request context: got %q", val)
+		}
+	})
+
+	rr := httptest.NewRecorder()
+	// func ReqID(h http.Handler) http.Handler
+	// Stores an "requestIDKey" in the request context.
+	handler := ReqID(testHandler)
+	handler.ServeHTTP(rr, req)
+}
 func TestGetOnly_Get(t *testing.T) {
 	req, err := http.NewRequest("GET", "/hash", nil)
 	if err != nil {
