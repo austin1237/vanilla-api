@@ -1,4 +1,5 @@
 # vanilla-api
+[![CircleCI](https://circleci.com/gh/austin1237/vanilla-api.svg?style=svg)](https://circleci.com/gh/austin1237/vanilla-api)<br />
 An api that only uses the standard lib
 
 ## Prerequistes
