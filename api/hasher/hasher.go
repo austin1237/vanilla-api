@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-func HashString(pword string) string {
+func GenerateHash(pword string) string {
 	hash := sha512.New()
 	io.WriteString(hash, pword)
 	sum := hash.Sum(nil)

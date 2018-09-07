@@ -1,36 +1,59 @@
 package handler
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/user/api/hasher"
+	"github.com/user/api/server"
+	"github.com/user/api/stats"
+	"github.com/user/api/validator"
 )
 
-func GetHash() http.Handler {
+func Stats(sStats *stats.ServerStats) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r.ParseForm()
-		// Validate form here
-		userPassword := r.Form["password"][0]
-		hashStr := hasher.HashString(userPassword)
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(hashStr))
-	})
-}
-
-func ArtificalWait(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(5 * time.Second)
-		next.ServeHTTP(w, r)
-	})
-}
-
-func PostOnly(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
-			http.Error(w, http.StatusText(404), http.StatusNotFound)
+		clientJSON, err := json.Marshal(sStats)
+		if err != nil {
+			http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 			return
 		}
-		next.ServeHTTP(w, r)
+		w.WriteHeader(http.StatusOK)
+		w.Write(clientJSON)
+	})
+	// Output:
+	// [{"average": 5000, "total": 1}]
+}
+
+func Hash(sStats *stats.ServerStats) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		err := validator.ValidateFormPassword(r.Form)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		userPassword := r.Form["password"][0]
+		hashStr := hasher.GenerateHash(userPassword)
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(hashStr))
+		startTime, ok := r.Context().Value("startTime").(time.Time)
+		if !ok {
+			log.Println("Error: start time was not found in context, skipping metrics")
+		} else {
+			now := time.Now()
+			sStats.SuccessfulRequest(startTime, now)
+		}
+	})
+}
+
+func ShutDown(serv server.Api) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Shutting Down"))
+		go func() {
+			serv.ShutDown()
+		}()
 	})
 }
