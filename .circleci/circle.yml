@@ -6,7 +6,6 @@ jobs:
     working_directory: ~/go/src/github.com/user/api
     steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: Run tests
           command: go test ./...
