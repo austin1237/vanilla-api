@@ -10,11 +10,13 @@ type ServerStats struct {
 	Average   float64   `json:"average"`
 }
 
+// New returns a new instance of ServerStats
 func New() *ServerStats {
 	sStats := ServerStats{}
 	return &sStats
 }
 
+// SuccessfulRequest increments total and calculate the new average based on startTime and endTime
 func (sStats *ServerStats) SuccessfulRequest(startTime time.Time, endTime time.Time) {
 	var sum float64
 	diff := endTime.Sub(startTime)

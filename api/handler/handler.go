@@ -13,6 +13,7 @@ import (
 	"github.com/user/api/validator"
 )
 
+// Stats will return the current servers stats in JSON format
 func Stats(sStats *stats.ServerStats) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestID, ok := r.Context().Value("requestIDKey").(string)
@@ -29,10 +30,9 @@ func Stats(sStats *stats.ServerStats) http.Handler {
 		w.WriteHeader(http.StatusOK)
 		w.Write(clientJSON)
 	})
-	// Output:
-	// [{"average": 5000, "total": 1}]
 }
 
+// Hash will return a hash of a password sent in and increment the server's stats
 func Hash(sStats *stats.ServerStats) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestID, ok := r.Context().Value("requestIDKey").(string)
@@ -62,6 +62,7 @@ func Hash(sStats *stats.ServerStats) http.Handler {
 	})
 }
 
+// ShutDown will gracefully shut the server down
 func ShutDown(serv server.Api) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)

@@ -6,6 +6,7 @@ import (
 	"io"
 )
 
+// GenerateHash creates a new sha512 hash based on the string passed in
 func GenerateHash(pword string) string {
 	hash := sha512.New()
 	io.WriteString(hash, pword)

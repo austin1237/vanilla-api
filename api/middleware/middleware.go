@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// ArtificalWait will wait for 5 seconds
 func ArtificalWait(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(5 * time.Second)
@@ -15,6 +16,7 @@ func ArtificalWait(next http.Handler) http.Handler {
 	})
 }
 
+// PostOnly will return 404s on any non Post Request
 func PostOnly(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
@@ -25,6 +27,7 @@ func PostOnly(next http.Handler) http.Handler {
 	})
 }
 
+// GetOnly will return 404s on any non get request
 func GetOnly(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
@@ -35,6 +38,7 @@ func GetOnly(next http.Handler) http.Handler {
 	})
 }
 
+// StartTime will attach the current time to the request's contexxt
 func StartTime(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -43,6 +47,7 @@ func StartTime(next http.Handler) http.Handler {
 	})
 }
 
+// ReqInfo will log basic info about the a request sent to the server
 func ReqInfo(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
@@ -56,6 +61,8 @@ func ReqInfo(next http.Handler) http.Handler {
 	})
 }
 
+// ReqID attaches either a requestId string to the requests context
+// ReqID with either use the clients X-Request-Id or generate a new one
 func ReqID(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestID := r.Header.Get("X-Request-Id")

@@ -12,6 +12,7 @@ type Api struct {
 	Mux    *http.ServeMux
 }
 
+// New returns a new instance of server.Api configured to run on the http port passed in
 func New(port string) Api {
 	done := make(chan bool, 1)
 	httpServer := &http.Server{
@@ -24,6 +25,7 @@ func New(port string) Api {
 	return serv
 }
 
+// RegisterRoutes will attach the http mux to the http server
 func (serv Api) RegisterRoutes(mux *http.ServeMux) {
 	serv.Server.Handler = mux
 }
@@ -38,6 +40,7 @@ func (serv Api) Start() {
 	<-serv.Done
 }
 
+// ShutDown will attempt to gracefully shutdown the server
 func (serv Api) ShutDown() {
 	log.Println("shutting the server down")
 	serv.Server.SetKeepAlivesEnabled(false)
