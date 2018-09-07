@@ -9,6 +9,7 @@ import (
 	"github.com/user/api/stats"
 )
 
+// CreateRouter will return a new http mux with routes attached
 func CreateRouter(sStats *stats.ServerStats, serv server.Api) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.Handle("/hash", middleware.ReqID(middleware.ReqInfo(middleware.StartTime(middleware.PostOnly(middleware.ArtificalWait(handler.Hash(sStats)))))))
