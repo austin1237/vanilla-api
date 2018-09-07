@@ -1,0 +1,3 @@
+.PHONEY: test
+test:
+	docker-compose run api go test ./...
