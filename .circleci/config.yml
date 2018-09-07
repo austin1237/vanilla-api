@@ -12,3 +12,10 @@ jobs:
       - run:
           name: Run tests
           command: cd /go/src/github.com/user/api && go test ./...
+
+
+workflows:
+  version: 2
+  test-api-service:
+    jobs:
+       - test
