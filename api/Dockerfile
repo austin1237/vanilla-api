@@ -1,4 +1,4 @@
-FROM golang:1.11
+FROM golang:1.11.0
 RUN apt-get update
 
 
@@ -7,7 +7,4 @@ RUN mkdir -p /go/src/github.com/user/api
 COPY . /go/src/github.com/user/api
 WORKDIR /go/src/github.com/user/api
 
-# Install hotreloader
-RUN go get github.com/pilu/fresh
-
-CMD ["fresh"]
+CMD ["go", "run",  "/go/src/github.com/user/api"]
