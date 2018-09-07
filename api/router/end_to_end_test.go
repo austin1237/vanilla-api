@@ -1,4 +1,4 @@
-package main
+package router
 
 import (
 	"io"
@@ -8,7 +8,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/user/api/router"
 	"github.com/user/api/server"
 	"github.com/user/api/stats"
 )
@@ -28,8 +27,8 @@ func newreq(t *testing.T, method, url string, body io.Reader) *http.Request {
 func TestEndToEnd(t *testing.T) {
 	done := make(chan bool, 1)
 	sStats := stats.New()
-	serv := server.New(done, "8081")
-	routes := router.CreateRouter(sStats, serv)
+	serv := server.New(done, "8080")
+	routes := CreateRouter(sStats, serv)
 	serv.RegisterRoutes(routes)
 	testServer := httptest.NewUnstartedServer(routes)
 	testServer.Config = serv.Server
