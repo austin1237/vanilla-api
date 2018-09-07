@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -14,9 +15,15 @@ import (
 
 func Stats(sStats *stats.ServerStats) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestID, ok := r.Context().Value("requestIDKey").(string)
+		if !ok {
+			requestID = "unknown"
+		}
 		clientJSON, err := json.Marshal(sStats)
 		if err != nil {
-			http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+			logTxt := fmt.Sprintf("ReqID:%v Error:%v", requestID, err.Error())
+			log.Println(logTxt)
+			http.Error(w, "unable to marshal stats json", http.StatusInternalServerError)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
@@ -28,9 +35,15 @@ func Stats(sStats *stats.ServerStats) http.Handler {
 
 func Hash(sStats *stats.ServerStats) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestID, ok := r.Context().Value("requestIDKey").(string)
+		if !ok {
+			requestID = "unknown"
+		}
 		r.ParseForm()
 		err := validator.ValidateFormPassword(r.Form)
 		if err != nil {
+			logTxt := fmt.Sprintf("ReqID:%v Error:%v", requestID, err.Error())
+			log.Println(logTxt)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -40,7 +53,8 @@ func Hash(sStats *stats.ServerStats) http.Handler {
 		w.Write([]byte(hashStr))
 		startTime, ok := r.Context().Value("startTime").(time.Time)
 		if !ok {
-			log.Println("Error: start time was not found in context, skipping metrics")
+			logTxt := fmt.Sprintf("ReqID:%v Error:start time was not found in context, skipping metrics", requestID)
+			log.Println(logTxt)
 		} else {
 			now := time.Now()
 			sStats.SuccessfulRequest(startTime, now)

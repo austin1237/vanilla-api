@@ -11,8 +11,8 @@ import (
 
 func CreateRouter(sStats *stats.ServerStats, serv server.Api) *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.Handle("/hash", middleware.StartTime(middleware.PostOnly(middleware.ArtificalWait(handler.Hash(sStats)))))
-	mux.Handle("/stats", middleware.GetOnly(handler.Stats(sStats)))
-	mux.Handle("/shutdown", handler.ShutDown(serv))
+	mux.Handle("/hash", middleware.ReqID(middleware.ReqInfo(middleware.StartTime(middleware.PostOnly(middleware.ArtificalWait(handler.Hash(sStats)))))))
+	mux.Handle("/stats", middleware.ReqID(middleware.ReqInfo(middleware.GetOnly(handler.Stats(sStats)))))
+	mux.Handle("/shutdown", middleware.ReqID(middleware.ReqInfo(handler.ShutDown(serv))))
 	return mux
 }
