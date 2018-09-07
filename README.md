@@ -14,8 +14,14 @@ docker-compose up
 ```
 
 ### Tests
-To run the test suite use the command
+To run the unit tests use the command
 ```bash
 make test
 ```
+
+To run the entire test suite including the integration tests run
+```bash
+make integration
+```
+The integration tests take ~15 seconds to run. 
 

@@ -44,8 +44,7 @@ func TestShutDown(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	done := make(chan bool, 1)
-	mockServer := server.New(done, "3000")
+	mockServer := server.New("3000")
 	rr := httptest.NewRecorder()
 	handler := ShutDown(mockServer)
 
