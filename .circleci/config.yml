@@ -12,6 +12,14 @@ jobs:
       - run:
           name: Run tests
           command: cd /go/src/github.com/user/api && go test ./...
+      - run:
+          name: Creating Dummy Artifacts
+          command: |
+            echo "my artifact file" > /tmp/artifact-1;
+            
+      - store_artifacts:
+          path: /tmp/artifact-1
+          destination: artifact-file
 
 
 workflows:
